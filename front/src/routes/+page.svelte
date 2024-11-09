@@ -1,4 +1,33 @@
+<script>
+	let narrator = "Welcome to Tamagotchi Game";
+	let pet = "Jeffrey";
+	let imageUrl = "";
+	let prompt = "";
+
+	async function generateImage() {
+		try {
+			const response = await fetch(
+				`http://localhost:8000/generate-image?prompt=${encodeURIComponent(prompt)}`
+			);
+			if (response.ok) {
+				const blob = await response.blob();
+				imageUrl = URL.createObjectURL(blob);
+			}
+		} catch (error) {
+			console.error("Error generating image:", error);
+		}
+	}
+</script>
+
+<svelte:head>
+	<link
+		href="https://fonts.googleapis.com/css2?family=Doto:wght@100..900&display=swap"
+		rel="stylesheet"
+	/>
+</svelte:head>
+
 <div class="container">
+	<h1>{pet}</h1>
 	<div class="image-row">
 		<img
 			src="/cat_placeholder.jpg"
@@ -8,6 +37,10 @@
 		/>
 	</div>
 
+	<div class="textbox-container">
+		<p>> {narrator}</p>
+	</div>
+
 	<div class="button-row">
 		<button>Button 1</button>
 		<button>Button 2</button>
@@ -15,10 +48,21 @@
 	</div>
 </div>
 
+<input bind:value={prompt} placeholder="Enter prompt" />
+<button on:click={generateImage}>Generate Image</button>
+
+{#if imageUrl}
+	<img src={imageUrl} />
+{/if}
+
 <style>
 	:global(body) {
 		margin: 0;
 		padding: 0;
+		font-family: "Doto", sans-serif;
+		font-optical-sizing: auto;
+		background-color: #1b1b1b;
+		color: white;
 	}
 
 	* {
@@ -45,6 +89,22 @@
 		display: flex;
 		gap: 1rem;
 		justify-content: center;
+	}
+
+	.textbox-container {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border: 1px solid #fff;
+		width: 60%;
+	}
+
+	h1 {
+		text-align: center;
+	}
+
+	p {
+		font-size: 18px;
 	}
 
 	img {
