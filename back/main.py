@@ -3,6 +3,8 @@ from pydantic import BaseModel
 from transformers import pipeline
 from typing import Optional
 import uvicorn
+import requests
+
 
 
 # Response model
@@ -50,7 +52,7 @@ async def generate(request: GenerationRequest):
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
-import requests
+
 def download_image(prompt, width=768, height=768, model='flux'):
     url = f"https://image.pollinations.ai/prompt/{prompt}?width={width}&height={height}&model={model}"
     response = requests.get(url)
